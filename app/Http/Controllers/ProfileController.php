@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
 use App\Models\User;
+use App\Models\Post;
 use App\Models\Follower;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -11,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
+use illuminate\Support\Collection;
 
 class ProfileController extends Controller
 {
@@ -83,13 +85,27 @@ class ProfileController extends Controller
         return Redirect::to('/');
     }
 
+    /**
+     * Display the specified user's profile.
+     */
     public function show(User $profile)
     {
-        // Eager load the relationships for better performance
+        // Eager load relationships
         $profile->load(['bioTitle', 'followers', 'followings']);
-        
+
+        // Initialize posts as an empty collection (never null)
+        $posts = collect([]);
+
+        try {
+            // Get the user's posts
+            $posts = $profile->posts()->latest()->get();
+        } catch (\Exception $e) {
+            \Log::error('Error loading posts: ' . $e->getMessage());
+            // Keep the empty collection if error occurs
+        }
+
         $isFollowing = false;
-        
+
         if (Auth::check()) {
             $isFollowing = Auth::user()->follows($profile);
         }
@@ -97,6 +113,7 @@ class ProfileController extends Controller
         return view('dashboard', [
             'profile' => $profile,
             'isFollowing' => $isFollowing,
+            'posts' => $posts, // This will always be defined as at least an empty collection
         ]);
     }
 
@@ -178,11 +195,24 @@ class ProfileController extends Controller
     /**
      * Display the users that this profile follows.
      */
-    public function followings(User $profile)
+    public function following(User $profile) // Match this method name with the route
     {
         $followings = $profile->followings()->with('following')->paginate(15);
 
         return view('profile.following', [
+            'profile' => $profile,
+            'followings' => $followings
+        ]);
+    }
+
+    /**
+     * Display the users that this profile follows.
+     */
+    public function followings(User $profile)
+    {
+        $followings = $profile->followings()->with('following')->paginate(15);
+
+        return view('profile.followings', [
             'profile' => $profile,
             'followings' => $followings
         ]);
@@ -207,5 +237,47 @@ class ProfileController extends Controller
         $user->save();
 
         return back()->with('status', 'Profile image updated successfully');
+    }
+
+    /**
+     * Display a post.
+     */
+    public function showPost($id)
+    {
+        $post = Post::with('user')->findOrFail($id);
+
+        return view('posts.posts', compact('post'));
+    }
+
+    /**
+     * Show the form for creating a new post.
+     */
+    public function createPost()
+    {
+        return view('posts.create');
+    }
+
+    /**
+     * Store a newly created post in storage.
+     */
+    public function storePost(Request $request)
+    {
+        $validated = $request->validate([
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'caption' => 'nullable|string|max:2200',
+            'location' => 'nullable|string|max:255',
+        ]);
+
+        $imagePath = $request->file('image')->store('posts', 'public');
+
+        Post::create([
+            'user_id' => Auth::id(),
+            'image_path' => $imagePath,
+            'caption' => $validated['caption'] ?? null,
+            'location' => $validated['location'] ?? null,
+        ]);
+
+        return redirect()->route('profile.show', ['profile' => Auth::id()])
+            ->with('status', 'Post created successfully!');
     }
 }

@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use App\Http\Controllers\PostController;
 
 Route::get('/', function () {
     return view('auth.register');
@@ -23,6 +24,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile/{profile}', [ProfileController::class, 'show'])->name('profile.show');
     Route::get('/profile/{profile}/followers', [ProfileController::class, 'followers'])->name('profile.followers');
     Route::get('/profile/{profile}/following', [ProfileController::class, 'followings'])->name('profile.followings');
+
+    // Post routes
+    Route::get('/posts/create', [ProfileController::class, 'createPost'])->name('posts.create');
+    Route::post('/posts', [ProfileController::class, 'storePost'])->name('posts.store');
+    Route::get('/posts/{id}', [ProfileController::class, 'showPost'])->name('posts.show');
+
+    // Add these routes to your existing routes
+    Route::resource('posts', PostController::class);
 });
 
 // Add follow/unfollow route

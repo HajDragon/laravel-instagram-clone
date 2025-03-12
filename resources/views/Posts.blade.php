@@ -1,65 +1,140 @@
-<!-- filepath: c:\Users\Arshia\Documents\school\output\PDFs\Summa\laravel\instagram\resources\views\Posts.blade.php -->
-<x-app-layout>
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    <h2 class="text-2xl font-bold mb-4">My Posts</h2>
-                    
-                    <div class="grid grid-cols-3 gap-4">
-                        @foreach($posts as $post)
-                            <div class="post-item">
-                                <a href="{{ route('posts.show', $post->id) }}" class="post-link" data-post-id="{{ $post->id }}">
-                                    <img src="{{ Storage::url($post->image_path) }}" alt="Post {{ $post->id }}" 
-                                         class="w-full h-64 object-cover rounded">
-                                </a>
-                            </div>
-                        @endforeach
-                    </div>
+<div id="instagram-post-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75 overflow-y-auto">
+    <!-- Close button -->
+    <button id="close-post-modal" class="absolute top-4 right-4 text-white text-3xl">&times;</button>
+    
+    <!-- Post container -->
+    <div class="bg-gray-800 rounded-md max-w-lg w-full mx-4 overflow-hidden shadow-xl">
+        <!-- Post header -->
+        <div class="flex items-center p-3 border-b border-gray-700">
+            <img src="{{ $post->user->profile_image ? asset('storage/' . $post->user->profile_image) : 'https://avatarfiles.alphacoders.com/364/thumb-1920-364866.png' }}" 
+                 class="w-8 h-8 rounded-full object-cover mr-3" 
+                 alt="Profile Picture">
+            <div class="flex-1">
+                <a href="{{ route('profile.show', ['profile' => $post->user_id]) }}" class="font-bold text-white hover:underline">
+                    {{ $post->user->name }}
+                </a>
+                <p class="text-xs text-gray-400">{{ $post->location ?? 'Instagram' }}</p>
+            </div>
+            <button class="text-white">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" />
+                </svg>
+            </button>
+        </div>
+        
+        <!-- Post image -->
+        <div class="aspect-square bg-black flex items-center justify-center">
+            <img src="{{ asset('storage/' . $post->image_path) }}" 
+                 class="max-h-full max-w-full object-contain" 
+                 alt="Post image">
+        </div>
+        
+        <!-- Post actions -->
+        <div class="p-3 border-t border-b border-gray-700">
+            <div class="flex justify-between">
+                <div class="flex space-x-4">
+                    <button class="text-white">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                        </svg>
+                    </button>
+                    <button class="text-white">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                        </svg>
+                    </button>
+                    <button class="text-white">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
+                        </svg>
+                    </button>
+                </div>
+                <button class="text-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                    </svg>
+                </button>
+            </div>
+            
+            <!-- Likes -->
+            <div class="mt-2">
+                <span class="text-white font-bold">{{ $post->likes_count ?? rand(10, 1000) }} likes</span>
+            </div>
+        </div>
+        
+        <!-- Caption -->
+        <div class="p-3">
+            <div class="flex mb-2">
+                <a href="{{ route('profile.show', ['profile' => $post->user_id]) }}" class="font-bold text-white hover:underline mr-2">
+                    {{ $post->user->name }}
+                </a>
+                <span class="text-white">{{ $post->caption ?? 'Enjoying life! #instagram #clone #laravel' }}</span>
+            </div>
+            
+            <!-- View all comments link -->
+            @if(($post->comments_count ?? 0) > 0)
+                <a href="#" class="text-gray-400 text-sm">
+                    View all {{ $post->comments_count }} comments
+                </a>
+            @endif
+            
+            <!-- Sample comments -->
+            <div class="mt-1">
+                <div class="flex">
+                    <a href="#" class="font-bold text-white hover:underline mr-2">user123</a>
+                    <span class="text-white">This looks amazing!</span>
+                </div>
+                <div class="flex">
+                    <a href="#" class="font-bold text-white hover:underline mr-2">photographer</a>
+                    <span class="text-white">Great composition!</span>
+                </div>
+            </div>
+            
+            <!-- Post time -->
+            <div class="mt-2 text-xs text-gray-400">
+                {{ $post->created_at ? $post->created_at->diffForHumans() : '2 HOURS AGO' }}
+            </div>
+            
+            <!-- Comment input -->
+            <div class="mt-3 border-t border-gray-700 pt-3">
+                <div class="flex">
+                    <button class="text-white mr-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </button>
+                    <input type="text" placeholder="Add a comment..." class="bg-transparent border-none flex-1 text-white focus:outline-none">
+                    <button class="text-blue-500 font-semibold">Post</button>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <!-- Modal container for post display -->
-    <div id="post-modal" class="fixed inset-0 bg-black bg-opacity-75 hidden flex items-center justify-center z-50">
-        <div class="bg-white max-w-4xl w-full rounded-lg overflow-hidden">
-            <div id="modal-content" class="p-4">
-                <!-- Post content will be loaded here -->
-            </div>
-        </div>
-    </div>
-
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Get all post links
-        const postLinks = document.querySelectorAll('.post-link');
-        const modal = document.getElementById('post-modal');
-        const modalContent = document.getElementById('modal-content');
-
-        // Add click event to each post link
-        postLinks.forEach(link => {
-            link.addEventListener('click', function(e) {
-                e.preventDefault();
-                
-                const postId = this.getAttribute('data-post-id');
-                
-                // Fetch post content via AJAX
-                fetch(`/posts/${postId}`)
-                    .then(response => response.text())
-                    .then(data => {
-                        modalContent.innerHTML = data;
-                        modal.classList.remove('hidden');
-                    });
-            });
-        });
-
-        // Close modal when clicking outside content area
-        modal.addEventListener('click', function(e) {
-            if (e.target === modal) {
-                modal.classList.add('hidden');
-            }
-        });
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Close modal when clicking the close button
+    document.getElementById('close-post-modal').addEventListener('click', function() {
+        closePostModal();
     });
-    </script>
-</x-app-layout>
+    
+    // Close modal when clicking outside the post
+    document.getElementById('instagram-post-modal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closePostModal();
+        }
+    });
+    
+    // Escape key to close modal
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closePostModal();
+        }
+    });
+    
+    function closePostModal() {
+        // Return to the previous page or dashboard
+        window.history.back();
+    }
+});
+</script>
