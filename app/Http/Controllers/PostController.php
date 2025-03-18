@@ -58,6 +58,9 @@ class PostController extends Controller
         return view('posts.edit', compact('post'));
     }
 
+    /**
+     * Update the specified resource in storage.
+     */
     public function update(Request $request, Post $post)
     {
         // Check if the current user owns this post
@@ -68,11 +71,33 @@ class PostController extends Controller
         $validated = $request->validate([
             'caption' => 'nullable|string|max:2200',
             'location' => 'nullable|string|max:100',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $post->update($validated);
+        // Handle image update if a new one is provided
+        if ($request->hasFile('image')) {
+            // Delete old image
+            if (Storage::disk('public')->exists($post->image_path)) {
+                Storage::disk('public')->delete($post->image_path);
+            }
 
-        return redirect()->route('posts.show', $post)
+            // Store new image
+            $validated['image_path'] = $request->file('image')->store('posts', 'public');
+        }
+
+        // Update the post with validated data
+        $post->caption = $validated['caption'] ?? $post->caption;
+        $post->location = $validated['location'] ?? $post->location;
+
+        // Only update image_path if a new image was uploaded
+        if (isset($validated['image_path'])) {
+            $post->image_path = $validated['image_path'];
+        }
+
+        $post->save();
+
+        // Redirect to the user's dashboard/profile page
+        return redirect()->route('profile.show', ['profile' => Auth::id()])
             ->with('success', 'Post updated successfully!');
     }
 
