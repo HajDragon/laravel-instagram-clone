@@ -34,5 +34,7 @@ MySQL or SQLite
 
 🚀 Installation
 1.Clone the repository:
-'''git clone https://github.com/yourusername/laravel-instagram-clone.git
-cd laravel-instagram-clone'''
+'''
+git clone https://github.com/yourusername/laravel-instagram-clone.git
+cd laravel-instagram-clone
+'''
