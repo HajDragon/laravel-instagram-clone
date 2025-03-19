@@ -20,7 +20,7 @@
         <div class="relative bg-gray-800 rounded-md max-w-3xl w-full mx-4 shadow-2xl overflow-hidden flex flex-col md:flex-row">
             <!-- Post image (left side on larger screens) -->
             <div class="md:w-2/3 bg-black flex items-center justify-center">
-                <img src="{{ asset('storage/' . $post->image_path) }}" 
+                <img src="{{ $post->image_url }}" 
                      class="max-w-full max-h-[80vh] object-contain" 
                      alt="Post image">
             </div>
@@ -77,30 +77,36 @@
                     </div>
                     @endif
                     
-                    <!-- Sample comments section -->
-                    <div class="space-y-4">
-                        <div class="flex">
-                            <img src="https://avatarfiles.alphacoders.com/123/123456.jpg" 
-                                 class="w-8 h-8 rounded-full object-cover mr-3" 
-                                 alt="User">
-                            <div>
-                                <a href="#" class="font-bold text-white hover:underline">user123</a>
-                                <p class="text-white">This looks amazing!</p>
-                                <p class="text-xs text-gray-400 mt-1">1 hour ago</p>
-                            </div>
+                    <!-- Comments section title -->
+                    @if(isset($post->comments) && $post->comments->count() > 0)
+                        <div class="mb-3 mt-4">
+                            <p class="text-gray-400 text-sm">
+                                View all {{ $post->comments->count() }} comments
+                            </p>
                         </div>
-                        <div class="flex">
-                            <img src="https://avatarfiles.alphacoders.com/789/789012.jpg" 
-                                 class="w-8 h-8 rounded-full object-cover mr-3" 
-                                 alt="User">
-                            <div>
-                                <a href="#" class="font-bold text-white hover:underline">photographer</a>
-                                <p class="text-white">Great composition!</p>
-                                <p class="text-xs text-gray-400 mt-1">30 minutes ago</p>
+                    @endif
+
+                    <!-- Comments -->
+                    <div class="mt-2 space-y-3">
+                        @forelse($post->comments ?? [] as $comment)
+                            <div class="flex items-start mb-2">
+                                <img src="{{ $comment->user->profile_image ? asset('storage/' . $comment->user->profile_image) : 'https://avatarfiles.alphacoders.com/364/thumb-1920-364866.png' }}" 
+                                     class="w-7 h-7 rounded-full object-cover mr-2 flex-shrink-0" 
+                                     alt="Commenter's profile picture">
+                                
+                                <div>
+                                    <div class="flex flex-wrap">
+                                        <a href="{{ route('profile.show', ['profile' => $comment->user->id]) }}" 
+                                           class="font-bold text-white hover:underline mr-2">{{ $comment->user->name }}</a>
+                                        <span class="text-white">{{ $comment->content }}</span>
+                                    </div>
+                                    <p class="text-xs text-gray-500 mt-1">{{ $comment->created_at->diffForHumans() }}</p>
+                                </div>
                             </div>
-                        </div>
+                        @empty
+                            <div class="text-gray-400 py-2">No comments yet</div>
+                        @endforelse
                     </div>
-                </div>
                 
                 <!-- Post actions -->
                 <div class="border-t border-gray-700 p-4">

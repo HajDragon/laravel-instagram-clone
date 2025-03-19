@@ -102,7 +102,7 @@
         @if(isset($posts) && $posts->count() > 0)
             @foreach($posts as $post)
                 <div class="aspect-square overflow-hidden rounded-lg cursor-pointer post-thumbnail" data-post-id="{{ $post->id }}">
-                    <img src="{{ asset('storage/' . $post->image_path) }}" 
+                    <img src="{{ $post->image_url }}" 
                          class="w-full h-full object-cover hover:scale-105 transition-transform duration-300" 
                          alt="Post image">
                 </div>

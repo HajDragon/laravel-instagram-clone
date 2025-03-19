@@ -29,14 +29,18 @@ Route::middleware('auth')->group(function () {
     Route::get('/posts/create', [ProfileController::class, 'createPost'])->name('posts.create');
     Route::post('/posts', [ProfileController::class, 'storePost'])->name('posts.store');
     Route::get('/posts/{id}', [ProfileController::class, 'showPost'])->name('posts.show');
+    Route::get("/photos", [ProfileController::class, 'photos'])->name('photos');
 
     // Add these routes to your existing routes
     Route::resource('posts', PostController::class);
+    Route::get('/posts/{post}', [PostController::class, 'show'])->name('posts.show');
 });
 
 // Add follow/unfollow route
-Route::post('/follow/{profile}', [ProfileController::class, 'follow'])
+Route::post('/follow/{profile}', [ProfileController::class, 'photo'])
     ->middleware('auth')
     ->name('follow');
+
+Route::post('/follow/{profile}', [App\Http\Controllers\ProfileController::class, 'follow'])->name('profile.follow')->middleware('auth');
 
 require __DIR__ . '/auth.php';

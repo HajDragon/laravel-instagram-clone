@@ -24,7 +24,7 @@
         
         <!-- Post image -->
         <div class="aspect-square bg-black flex items-center justify-center">
-            <img src="{{ asset('storage/' . $post->image_path) }}" 
+            <img src="{{ $post->image_url }}" 
                  class="max-h-full max-w-full object-contain" 
                  alt="Post image">
         </div>
@@ -72,22 +72,23 @@
             </div>
             
             <!-- View all comments link -->
-            @if(($post->comments_count ?? 0) > 0)
+            @if(isset($post->comments) && $post->comments->count() > 0)
                 <a href="#" class="text-gray-400 text-sm">
-                    View all {{ $post->comments_count }} comments
+                    View all {{ $post->comments->count() }} comments
                 </a>
             @endif
             
-            <!-- Sample comments -->
+            <!-- Comments -->
             <div class="mt-1">
-                <div class="flex">
-                    <a href="#" class="font-bold text-white hover:underline mr-2">user123</a>
-                    <span class="text-white">This looks amazing!</span>
-                </div>
-                <div class="flex">
-                    <a href="#" class="font-bold text-white hover:underline mr-2">photographer</a>
-                    <span class="text-white">Great composition!</span>
-                </div>
+                @forelse($post->comments ?? [] as $comment)
+                    <div class="flex">
+                        <a href="{{ route('profile.show', ['profile' => $comment->user->id]) }}" 
+                           class="font-bold text-white hover:underline mr-2">{{ $comment->user->name }}</a>
+                        <span class="text-white">{{ $comment->content }}</span>
+                    </div>
+                @empty
+                    <div class="text-gray-400">No comments yet</div>
+                @endforelse
             </div>
             
             <!-- Post time -->

@@ -42,10 +42,9 @@ class PostController extends Controller
 
     public function show($id)
     {
-        // Use findOrFail to throw a 404 if the post isn't found
-        $post = Post::with('user')->findOrFail($id);
+        $post = Post::with(['user', 'comments.user'])->findOrFail($id);
 
-        return view('posts.posts', compact('post'));
+        return view('Posts', compact('post'));
     }
 
     public function edit(Post $post)

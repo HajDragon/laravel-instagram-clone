@@ -280,4 +280,9 @@ class ProfileController extends Controller
         return redirect()->route('profile.show', ['profile' => Auth::id()])
             ->with('status', 'Post created successfully!');
     }
+    public function photos()
+    {
+        return view('photos', [
+        ]);
+    }
 }

@@ -3,7 +3,7 @@
 @section('content')
 <div class="container mx-auto px-4 py-8">
     <div class="max-w-3xl mx-auto">
-        <a href="{{ route('dashboard') }}" class="text-blue-500 hover:underline">
+        <a href="{{ route('profile.show', ['profile' => Auth::user()->id]) }}" class="text-blue-500 hover:underline @if(request()->routeIs('profile.show')) active @endif">
             &larr; Back to profile
         </a>
         <h2 class="text-2xl font-bold mb-6 text-white">Edit Profile</h2>
