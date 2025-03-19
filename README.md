@@ -10,7 +10,6 @@
 Laravel Instagram Clone 📸
 A fully-featured Instagram clone built with Laravel, featuring user profiles, posts, comments, and a follow system. This project demonstrates modern web development practices using Laravel, Tailwind CSS, and Alpine.js.
 
-<img alt="Instagram Clone Demo" src="https://your-screenshot-url-here.png/">
 ✨ Features
 User Authentication - Register, login, and password reset
 User Profiles - Customizable bio, profile picture, and stats
