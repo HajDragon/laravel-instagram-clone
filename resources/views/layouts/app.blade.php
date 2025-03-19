@@ -1,3 +1,24 @@
+{{-- 
+/**
+ * Main application layout template.
+ *
+ * This is the primary layout that wraps most authenticated pages in the application.
+ * It provides the basic HTML structure, meta tags, navigation bar, and content area
+ * that all authenticated pages inherit.
+ *
+ * Features:
+ * - Responsive meta tags
+ * - CSRF token for form security
+ * - Font loading
+ * - CSS and JS resource inclusion via Vite
+ * - Navigation bar integration
+ * - Optional header section
+ * - Dark mode support
+ *
+ * @var string $header Optional header content to display at top of page
+ * @yield content The main page content
+ */
+--}}
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>

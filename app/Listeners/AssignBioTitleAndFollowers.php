@@ -1,5 +1,16 @@
 <?php
-
+/**
+ * Class AssignBioTitleAndFollowers
+ *
+ * This listener is triggered after a user is registered. It performs the following actions:
+ * 1. Assigns a random bio title to the user if they don't already have one. If no bio titles exist, it creates a new one.
+ * 2. Makes some existing users follow the new user (up to 10 followers).
+ * 3. Makes the new user follow some existing users (up to 10 followings).
+ *
+ * Any exceptions during this process are logged for debugging purposes.
+ *
+ * @package App\Listeners
+ */
 namespace App\Listeners;
 
 use App\Models\fakeBioTitle;

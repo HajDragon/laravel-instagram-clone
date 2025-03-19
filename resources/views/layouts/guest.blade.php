@@ -1,3 +1,22 @@
+{{--
+/**
+ * Guest layout template for unauthenticated users.
+ *
+ * This template provides the layout for pages that don't require authentication,
+ * such as login, registration, and password reset pages. It has a centered
+ * design focused on authentication forms.
+ *
+ * Features:
+ * - Centered content layout
+ * - Application logo display
+ * - Container for auth forms
+ * - CSRF protection
+ * - Responsive design
+ * - Dark mode support
+ *
+ * @yield slot The main content to display in the centered container
+ */
+--}}
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>

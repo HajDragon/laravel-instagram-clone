@@ -1,3 +1,29 @@
+{{--
+/**
+ * Edit post form.
+ *
+ * This template allows users to edit their existing posts, including changing
+ * the image, caption, or location. It includes a preview of the current image
+ * and offers real-time preview of the new image if one is selected.
+ *
+ * Features:
+ * - Current image display
+ * - New image upload with preview functionality
+ * - Caption editing
+ * - Location editing
+ * - Form validation display
+ * - Navigation back to dashboard
+ *
+ * Expected variables:
+ * @param \App\Models\Post $post The post being edited
+ *
+ * Routes:
+ * - Form submits to route('posts.update', $post) via PUT
+ * - Return links to route('profile.show', Auth::id())
+ * 
+ * @extends layouts.app
+ */
+--}}
 @extends('layouts.app')
 
 @section('content')

@@ -1,25 +1,40 @@
 @extends('layouts.app')
 
 @section('content')
+<!--
+  Dashboard View (Profile Page)
+  This template displays a user's profile with their information, posts, and follow functionality.
+  Key features:
+  - Profile header with image, name, and stats
+  - Interactive follow/unfollow button using AJAX
+  - Responsive grid of user posts with clickable thumbnails
+  - Conditional "Add New Post" button for profile owners
+-->
 <div class="container mx-auto px-4 flex flex-col items-center"> 
+    <!-- Profile Header Section -->
     <div class="flex flex-wrap items-center justify-center">
+        <!-- Profile Image -->
         <div class="w-[150px] flex-shrink-0">
             <img src="{{ $profile->profile_image ? asset('storage/' . $profile->profile_image) : 'https://avatarfiles.alphacoders.com/364/thumb-1920-364866.png' }}"
                  class="rounded-full object-cover hover:scale-105 transition-transform duration-300 h-[150px] w-[150px]"  
                  alt="Profile Picture">
         </div>
+        <!-- User Information Section -->
         <div class="flex-1 pl-5 pt-4">
             <div class="flex items-center justify-between">
                 <div class="flex-1">
+                    <!-- User name and action buttons -->
                     <div class="flex items-center gap-4">
                         <h1 class="text-3xl font-bold {{ $isFollowing ? 'text-gray-500' : 'text-white' }}">{{ $profile->name }}</h1>
                         <x-blue-tick></x-blue-tick>
+                        <!-- Follow/Unfollow Button with AJAX Implementation -->
                         <button
                             class="follow-button flex items-center justify-center {{ $isFollowing ? 'bg-gray-300 hover:bg-gray-400 text-gray-500' : 'bg-blue-500 hover:bg-blue-700 text-white' }} font-bold py-1.5 px-6 rounded-md w-24"
                             data-following="{{ $isFollowing ? '1' : '0' }}">
                             {{ $isFollowing ? 'Following' : 'Follow' }}
                         </button>
                         <script>
+                            // AJAX Follow/Unfollow functionality
                             document.addEventListener('DOMContentLoaded', function() {
                                 const followButton = document.querySelector('.follow-button');
                                 
@@ -63,6 +78,7 @@
                             Message
                         </button>
                     </div>
+                    <!-- Profile Statistics (followers, posts, following) -->
                     <div class="flex space-x-5 mt-4 {{ $isFollowing ? 'text-gray-500' : 'text-white' }}">
                         <div>
                             <a href="{{ route('profile.followers', ['profile' => $profile->id]) }}" class="hover:underline">
@@ -78,6 +94,7 @@
                             </a>
                         </div>
                     </div>
+                    <!-- User Bio Information -->
                     <div class="pt-4 font-bold {{ $isFollowing ? 'text-gray-500' : 'text-white' }}">{{ $profile->getTitle() }}</div>
                     <div class="mt-2 {{ $isFollowing ? 'text-gray-500' : 'text-white' }}">{!! nl2br(e($profile->getBio())) !!}</div>
                     <div class="mt-2">
@@ -88,7 +105,7 @@
         </div>
     </div>
     
-    <!-- Add New Post button (only shows to profile owner) -->
+    <!-- Add New Post button (only visible to profile owner) -->
     @if(Auth::check() && Auth::id() === $profile->id)
     <div class="w-full max-w-4xl flex justify-end my-4">
         <a href="{{ route('posts.create') }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-lg">
@@ -97,7 +114,7 @@
     </div>
     @endif
     
-    <!-- Posts Grid -->
+    <!-- Posts Grid - Responsive layout with clickable thumbnails -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pt-5 max-w-4xl mx-auto justify-items-center w-full">
         @if(isset($posts) && $posts->count() > 0)
             @foreach($posts as $post)
@@ -115,7 +132,7 @@
     </div>
 </div>
 
-<!-- JavaScript to handle opening posts -->
+<!-- JavaScript to handle opening post details -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // Get all post thumbnails

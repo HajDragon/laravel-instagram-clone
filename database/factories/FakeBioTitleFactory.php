@@ -5,10 +5,27 @@ namespace Database\Factories;
 use App\Models\fakeBioTitle;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/**
+ * Factory for generating Instagram-style bio and title data.
+ * 
+ * This factory creates realistic user bio and headline content that mimics
+ * the style commonly found on Instagram profiles, including emoji usage
+ * and typical social media formatting.
+ */
 class FakeBioTitleFactory extends Factory
 {
+    /**
+     * The name of the model that this factory creates.
+     *
+     * @var string
+     */
     protected $model = fakeBioTitle::class;
 
+    /**
+     * Define the default state of the model.
+     *
+     * @return array<string, mixed>
+     */
     public function definition(): array
     {
         return [
@@ -17,6 +34,14 @@ class FakeBioTitleFactory extends Factory
         ];
     }
 
+    /**
+     * Configure the factory to generate Instagram-style bios and titles.
+     * 
+     * Creates social media style content with emojis, line breaks,
+     * and typical Instagram profile formatting patterns.
+     *
+     * @return \Illuminate\Database\Eloquent\Factories\Factory
+     */
     public function instagramStyle(): Factory
     {
         return $this->state(function (array $attributes) {

@@ -1,3 +1,27 @@
+{{--
+/**
+ * Individual post display template.
+ *
+ * This template provides a detailed view of an individual post as a modal overlay,
+ * including the image, caption, comments, and interactive elements like likes,
+ * comments, and sharing options.
+ *
+ * Features:
+ * - Post image display
+ * - User profile information
+ * - Post caption
+ * - Comments section with user avatars
+ * - Like, comment, share, and save buttons
+ * - Close button to return to previous screen
+ * - Post owner controls (edit/delete) for their own posts
+ * - Responsive design (different layouts for mobile/desktop)
+ *
+ * Expected variables:
+ * @param \App\Models\Post $post The post to display
+ *
+ * @requires authentication
+ */
+--}}
 <!DOCTYPE html>
 <html lang="en">
 <head>

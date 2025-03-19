@@ -1,10 +1,20 @@
+<!--
+  Post Detail View
+  This template displays a single post in a modal format with interactions.
+  Key features:
+  - Modal layout with close functionality
+  - Post image display with header and user information
+  - Action buttons (like, comment, share, bookmark)
+  - Comments section with input field
+  - JavaScript for modal interactions
+-->
 <div id="instagram-post-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75 overflow-y-auto">
     <!-- Close button -->
     <button id="close-post-modal" class="absolute top-4 right-4 text-white text-3xl">&times;</button>
     
     <!-- Post container -->
     <div class="bg-gray-800 rounded-md max-w-lg w-full mx-4 overflow-hidden shadow-xl">
-        <!-- Post header -->
+        <!-- Post header with user information -->
         <div class="flex items-center p-3 border-b border-gray-700">
             <img src="{{ $post->user->profile_image ? asset('storage/' . $post->user->profile_image) : 'https://avatarfiles.alphacoders.com/364/thumb-1920-364866.png' }}" 
                  class="w-8 h-8 rounded-full object-cover mr-3" 
@@ -22,14 +32,14 @@
             </button>
         </div>
         
-        <!-- Post image -->
+        <!-- Post image - main content -->
         <div class="aspect-square bg-black flex items-center justify-center">
             <img src="{{ $post->image_url }}" 
                  class="max-h-full max-w-full object-contain" 
                  alt="Post image">
         </div>
         
-        <!-- Post actions -->
+        <!-- Post actions (like, comment, share, save) -->
         <div class="p-3 border-t border-b border-gray-700">
             <div class="flex justify-between">
                 <div class="flex space-x-4">
@@ -56,13 +66,13 @@
                 </button>
             </div>
             
-            <!-- Likes -->
+            <!-- Likes count -->
             <div class="mt-2">
                 <span class="text-white font-bold">{{ $post->likes_count ?? rand(10, 1000) }} likes</span>
             </div>
         </div>
         
-        <!-- Caption -->
+        <!-- Caption and comments section -->
         <div class="p-3">
             <div class="flex mb-2">
                 <a href="{{ route('profile.show', ['profile' => $post->user_id]) }}" class="font-bold text-white hover:underline mr-2">
@@ -78,7 +88,7 @@
                 </a>
             @endif
             
-            <!-- Comments -->
+            <!-- Comments display -->
             <div class="mt-1">
                 @forelse($post->comments ?? [] as $comment)
                     <div class="flex">
@@ -91,12 +101,12 @@
                 @endforelse
             </div>
             
-            <!-- Post time -->
+            <!-- Post timestamp -->
             <div class="mt-2 text-xs text-gray-400">
                 {{ $post->created_at ? $post->created_at->diffForHumans() : '2 HOURS AGO' }}
             </div>
             
-            <!-- Comment input -->
+            <!-- Comment input field -->
             <div class="mt-3 border-t border-gray-700 pt-3">
                 <div class="flex">
                     <button class="text-white mr-3">
@@ -112,6 +122,7 @@
     </div>
 </div>
 
+<!-- Modal interaction JavaScript -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // Close modal when clicking the close button

@@ -1,13 +1,24 @@
 @extends('layouts.app')
 
 @section('content')
+<!--
+  Profile Edit Page
+  This template allows users to edit their profile information and upload profile pictures.
+  Key features:
+  - Back navigation to profile
+  - Form with validation for profile information
+  - Separate form for profile picture upload
+  - Status messages for successful updates
+-->
 <div class="container mx-auto px-4 py-8">
     <div class="max-w-3xl mx-auto">
+        <!-- Back navigation -->
         <a href="{{ route('profile.show', ['profile' => Auth::user()->id]) }}" class="text-blue-500 hover:underline @if(request()->routeIs('profile.show')) active @endif">
             &larr; Back to profile
         </a>
         <h2 class="text-2xl font-bold mb-6 text-white">Edit Profile</h2>
         
+        <!-- Status message for successful updates -->
         @if (session('status'))
             <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
                 {{ session('status') }}

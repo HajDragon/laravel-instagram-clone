@@ -1,3 +1,23 @@
+{{--
+/**
+ * Create new post form.
+ *
+ * This template provides a form for users to create new posts with images,
+ * captions, and location information.
+ *
+ * Features:
+ * - Image upload functionality
+ * - Caption input with error handling
+ * - Optional location tagging
+ * - Form validation display
+ * - Submit button for post creation
+ *
+ * Routes:
+ * - Form submits to route('posts.store') via POST
+ * 
+ * @extends layouts.app
+ */
+--}}
 @extends('layouts.app')
 
 @section('content')

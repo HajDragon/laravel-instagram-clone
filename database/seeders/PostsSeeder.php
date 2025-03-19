@@ -9,10 +9,22 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
 
+/**
+ * Seeder for creating Instagram-style posts with images.
+ * 
+ * Generates posts for all users with images from Picsum Photos.
+ * Uses direct image URLs rather than downloading files to save
+ * bandwidth and storage space during development.
+ */
 class PostsSeeder extends Seeder
 {
     /**
-     * Known working Picsum photo IDs to avoid verification
+     * Known working Picsum photo IDs to avoid verification.
+     * 
+     * This list contains IDs of images known to exist on Picsum Photos,
+     * allowing us to avoid HTTP verification requests when seeding.
+     * 
+     * @var array<int>
      */
     protected $knownGoodIds = [
         1,
@@ -118,7 +130,11 @@ class PostsSeeder extends Seeder
     ];
 
     /**
-     * Run the database seeds.
+     * Create posts for all users with Picsum images.
+     * 
+     * Clears existing posts, then creates 9 new posts for each user
+     * with images sourced directly from Picsum Photos. Shows a progress
+     * bar during creation to track the seeding process.
      */
     public function run(): void
     {
@@ -138,7 +154,7 @@ class PostsSeeder extends Seeder
 
         // For each user, create 9 posts
         foreach ($users as $user) {
-            // Create 9 posts for each user
+            // Create 9 posts for each user (Instagram's grid is 3x3)
             for ($i = 0; $i < 9; $i++) {
                 // Use known good IDs instead of trying to verify random ones
                 $randomNumber = $this->knownGoodIds[array_rand($this->knownGoodIds)];
@@ -146,7 +162,7 @@ class PostsSeeder extends Seeder
                 // Create a post with the direct URL
                 Post::create([
                     'user_id' => $user->id,
-                    'image_path' => "picsum:{$randomNumber}",
+                    'image_path' => "picsum:{$randomNumber}", // Store ID for direct URL access
                     'caption' => 'Post #' . ($i + 1) . ' by ' . $user->name . ' #instagram #laravel',
                     'location' => fake()->city() . ', ' . fake()->country(),
                 ]);
@@ -161,7 +177,10 @@ class PostsSeeder extends Seeder
     }
 
     /**
-     * Delete all existing posts and their associated images
+     * Delete all existing posts and their associated images.
+     * 
+     * Removes all posts from the database, deletes any locally stored images,
+     * and clears associated comments if the comments table exists.
      */
     private function deleteExistingPosts(): void
     {

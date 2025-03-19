@@ -1,3 +1,23 @@
+{{--
+/**
+ * Navigation bar component for authenticated users.
+ *
+ * Provides the top navigation bar with Instagram branding, user profile access,
+ * and responsive mobile navigation. Uses Alpine.js for responsive behavior.
+ *
+ * Features:
+ * - Instagram logo and branding
+ * - Profile dropdown menu
+ * - Responsive hamburger menu for mobile
+ * - Mobile navigation panel
+ * - User profile link
+ * - Logout functionality
+ *
+ * Required data:
+ * - Authenticated user
+ * - CSRF token for logout form
+ */
+--}}
 <nav x-data="{ open: false }" class="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

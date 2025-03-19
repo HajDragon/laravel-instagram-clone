@@ -1,5 +1,13 @@
 <?php
-
+/**
+ * Controller for handling post-related operations.
+ *
+ * This controller manages the creation, retrieval, updating, and deletion of posts.
+ * It includes methods for displaying lists of posts, creating new posts,
+ * showing individual posts, editing existing posts, and deleting posts.
+ * It also handles authorization to ensure that only the owner of a post can
+ * modify or delete it.
+ **/
 namespace App\Http\Controllers;
 
 use App\Models\Post;

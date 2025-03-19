@@ -1,4 +1,10 @@
 <?php
+/**
+ * Controller for handling user profiles, including displaying, updating,
+ * following, and managing posts.
+ *
+ * @package App\Http\Controllers
+ */
 
 namespace App\Http\Controllers;
 
