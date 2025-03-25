@@ -75,5 +75,9 @@ Route::post('/follow/{profile}', [App\Http\Controllers\ProfileController::class,
     ->middleware('auth')
     ->name('profile.follow');
 
+// User search and list routes
+Route::get('/users', [App\Http\Controllers\UserController::class, 'index'])->name('users.index');
+Route::get('/users/search', [App\Http\Controllers\UserController::class, 'search'])->name('users.search');
+
 // Include additional authentication routes from the auth.php file
 require __DIR__ . '/auth.php';

@@ -6,6 +6,7 @@
       - A list of followings with each user's profile image, name, and title.
       - A follow/unfollow button for each following (if not the current user).
       - Pagination for the followings list.
+      - Light/dark mode support
 -->
 
 @extends('layouts.app')
@@ -16,19 +17,19 @@
         <div class="flex items-center mb-6">
             <!-- Back Button -->
             <a href="{{ route('profile.show', $profile) }}" class="mr-2">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" viewBox="0 0 20 20" fill="currentColor">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600 dark:text-white" viewBox="0 0 20 20" fill="currentColor">
                     <!-- SVG path for arrow icon -->
                     <path fill-rule="evenodd" d="M9.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L7.414 9H15a1 1 0 110 2H7.414l2.293 2.293a1 1 0 010 1.414z" clip-rule="evenodd" />
                 </svg>
             </a>
             <!-- Page Title -->
-            <h1 class="text-2xl font-bold text-white">{{ $profile->name }}'s Following</h1>
+            <h1 class="text-2xl font-bold text-gray-800 dark:text-white">{{ $profile->name }}'s Following</h1>
         </div>
 
-        <div class="bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
             @if($followings->count() > 0)
                 <!-- List of followings -->
-                <ul class="divide-y divide-gray-700">
+                <ul class="divide-y divide-gray-200 dark:divide-gray-700">
                     @foreach($followings as $follow)
                         @if(isset($follow->following))
                             <li class="p-4 flex items-center justify-between">
@@ -41,18 +42,18 @@
                                     >
                                     <div>
                                         <!-- Link to user's profile -->
-                                        <a href="{{ route('profile.show', $follow->following) }}" class="font-medium text-white hover:underline">
+                                        <a href="{{ route('profile.show', $follow->following) }}" class="font-medium text-gray-800 dark:text-white hover:underline">
                                             {{ $follow->following->name }}
                                         </a>
                                         <!-- User title -->
-                                        <p class="text-sm text-gray-400">{{ $follow->following->getTitle() }}</p>
+                                        <p class="text-sm text-gray-500 dark:text-gray-400">{{ $follow->following->getTitle() }}</p>
                                     </div>
                                 </div>
                                 
                                 <!-- Follow/Unfollow button visible if the authenticated user is not the same as the displayed user -->
                                 @if(Auth::check() && Auth::id() !== $follow->following->id)
                                     <button 
-                                        class="follow-button px-3 py-1 rounded-md {{ Auth::user()->follows($follow->following) ? 'bg-gray-600 text-gray-300' : 'bg-blue-500 text-white' }}"
+                                        class="follow-button px-3 py-1 rounded-md {{ Auth::user()->follows($follow->following) ? 'bg-gray-300 dark:bg-gray-600 text-gray-600 dark:text-gray-300' : 'bg-blue-500 text-white' }}"
                                         data-user-id="{{ $follow->following->id }}"
                                         data-following="{{ Auth::user()->follows($follow->following) ? '1' : '0' }}"
                                     >
@@ -70,7 +71,7 @@
                 </div>
             @else
                 <!-- Message when no followings exist -->
-                <div class="p-8 text-center text-gray-400">
+                <div class="p-8 text-center text-gray-500 dark:text-gray-400">
                     {{ $profile->name }} isn't following anyone yet.
                 </div>
             @endif
@@ -108,9 +109,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                     if (data.following) {
                         this.classList.remove('bg-blue-500', 'text-white');
-                        this.classList.add('bg-gray-600', 'text-gray-300');
+                        this.classList.add('bg-gray-300', 'dark:bg-gray-600', 'text-gray-600', 'dark:text-gray-300');
                     } else {
-                        this.classList.remove('bg-gray-600', 'text-gray-300');
+                        this.classList.remove('bg-gray-300', 'dark:bg-gray-600', 'text-gray-600', 'dark:text-gray-300');
                         this.classList.add('bg-blue-500', 'text-white');
                     }
                 }

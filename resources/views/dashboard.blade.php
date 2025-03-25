@@ -25,7 +25,7 @@
                 <div class="flex-1">
                     <!-- User name and action buttons -->
                     <div class="flex items-center gap-4">
-                        <h1 class="text-3xl font-bold {{ $isFollowing ? 'text-gray-500' : 'text-white' }}">{{ $profile->name }}</h1>
+                        <h1 class="text-3xl font-bold text-gray-900 dark:text-white">{{ $profile->name }}</h1>
                         <x-blue-tick></x-blue-tick>
                         <!-- Follow/Unfollow Button with AJAX Implementation -->
                         <button
@@ -79,14 +79,14 @@
                         </button>
                     </div>
                     <!-- Profile Statistics (followers, posts, following) -->
-                    <div class="flex space-x-5 mt-4 {{ $isFollowing ? 'text-gray-500' : 'text-white' }}">
+                    <div class="flex space-x-5 mt-4 text-gray-800 dark:text-white">
                         <div>
                             <a href="{{ route('profile.followers', ['profile' => $profile->id]) }}" class="hover:underline">
                                 <strong class="font-medium">{{ $profile->followers()->count() }}</strong> followers
                             </a>
                         </div>
                         <div>
-                            <strong class="font-medium">153</strong> posts
+                            <strong class="font-medium">{{ isset($posts) ? $posts->count() : 0 }}</strong> posts
                         </div>
                         <div>
                             <a href="{{ route('profile.followings', ['profile' => $profile->id]) }}" class="hover:underline">
@@ -95,10 +95,10 @@
                         </div>
                     </div>
                     <!-- User Bio Information -->
-                    <div class="pt-4 font-bold {{ $isFollowing ? 'text-gray-500' : 'text-white' }}">{{ $profile->getTitle() }}</div>
-                    <div class="mt-2 {{ $isFollowing ? 'text-gray-500' : 'text-white' }}">{!! nl2br(e($profile->getBio())) !!}</div>
+                    <div class="pt-4 font-bold text-gray-800 dark:text-white">{{ $profile->getTitle() }}</div>
+                    <div class="mt-2 text-gray-700 dark:text-white">{!! nl2br(e($profile->getBio())) !!}</div>
                     <div class="mt-2">
-                        <a href="#" class="text-gray-400 hover:text-blue-800">https://www.cyberpunk.net/buy</a>
+                        <a href="#" class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">https://www.cyberpunk.net/buy</a>
                     </div>
                 </div>
             </div>

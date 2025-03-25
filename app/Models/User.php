@@ -126,6 +126,27 @@ class User extends Authenticatable
     }
 
     /**
+     * Check if the user is following another user.
+     *
+     * @param  int  $userId
+     * @return bool
+     */
+    public function isFollowing($userId)
+    {
+        return $this->followings()->where('following_id', $userId)->exists();
+    }
+
+    /**
+     * Check if the user is verified.
+     *
+     * @return bool
+     */
+    public function isVerified()
+    {
+        return $this->is_verified == 1;
+    }
+
+    /**
      * Get all posts created by this user.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
