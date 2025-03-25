@@ -6,7 +6,8 @@
   This template displays a user's profile with their information, posts, and follow functionality.
   Key features:
   - Profile header with image, name, and stats
-  - Interactive follow/unfollow button using AJAX
+  - Edit Profile button for own profile
+  - Interactive follow/unfollow and message buttons for other profiles
   - Responsive grid of user posts with clickable thumbnails
   - Conditional "Add New Post" button for profile owners
 -->
@@ -27,56 +28,68 @@
                     <div class="flex items-center gap-4">
                         <h1 class="text-3xl font-bold text-gray-900 dark:text-white">{{ $profile->name }}</h1>
                         <x-blue-tick></x-blue-tick>
-                        <!-- Follow/Unfollow Button with AJAX Implementation -->
-                        <button
-                            class="follow-button flex items-center justify-center {{ $isFollowing ? 'bg-gray-300 hover:bg-gray-400 text-gray-500' : 'bg-blue-500 hover:bg-blue-700 text-white' }} font-bold py-1.5 px-6 rounded-md w-24"
-                            data-following="{{ $isFollowing ? '1' : '0' }}">
-                            {{ $isFollowing ? 'Following' : 'Follow' }}
-                        </button>
-                        <script>
-                            // AJAX Follow/Unfollow functionality
-                            document.addEventListener('DOMContentLoaded', function() {
-                                const followButton = document.querySelector('.follow-button');
-                                
-                                if (followButton) {
-                                    followButton.addEventListener('click', function() {
-                                        const isFollowing = this.dataset.following === '1';
-                                        const followingId = {{ $profile->id }};
-                                        
-                                        fetch('/follow/' + followingId, {
-                                            method: 'POST',
-                                            headers: {
-                                                'Content-Type': 'application/json',
-                                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                                            },
-                                            body: JSON.stringify({
-                                                follow: !isFollowing
+                        
+                        <!-- Show Edit Profile button if viewing own profile -->
+                        @if(Auth::check() && Auth::id() === $profile->id)
+                            <a href="{{ route('profile.edit') }}" 
+                               class="bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 text-gray-800 dark:text-white font-bold py-1.5 px-6 rounded-md flex items-center justify-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                                </svg>
+                                Edit Profile
+                            </a>
+                        @else
+                            <!-- Follow/Unfollow Button with AJAX Implementation (only for other profiles) -->
+                            <button
+                                class="follow-button flex items-center justify-center {{ $isFollowing ? 'bg-gray-300 hover:bg-gray-400 text-gray-500' : 'bg-blue-500 hover:bg-blue-700 text-white' }} font-bold py-1.5 px-6 rounded-md w-24"
+                                data-following="{{ $isFollowing ? '1' : '0' }}">
+                                {{ $isFollowing ? 'Following' : 'Follow' }}
+                            </button>
+                            <script>
+                                // AJAX Follow/Unfollow functionality
+                                document.addEventListener('DOMContentLoaded', function() {
+                                    const followButton = document.querySelector('.follow-button');
+                                    
+                                    if (followButton) {
+                                        followButton.addEventListener('click', function() {
+                                            const isFollowing = this.dataset.following === '1';
+                                            const followingId = {{ $profile->id }};
+                                            
+                                            fetch('/follow/' + followingId, {
+                                                method: 'POST',
+                                                headers: {
+                                                    'Content-Type': 'application/json',
+                                                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                                },
+                                                body: JSON.stringify({
+                                                    follow: !isFollowing
+                                                })
                                             })
-                                        })
-                                        .then(response => response.json())
-                                        .then(data => {
-                                            if (data.success) {
-                                                this.dataset.following = data.following ? '1' : '0';
-                                                this.textContent = data.following ? 'Following' : 'Follow';
-                                                
-                                                if(data.following) {
-                                                    this.classList.remove('bg-blue-500','hover:bg-blue-700','text-white');
-                                                    this.classList.add('bg-gray-300','hover:bg-gray-400','text-gray-500');
+                                            .then(response => response.json())
+                                            .then(data => {
+                                                if (data.success) {
+                                                    this.dataset.following = data.following ? '1' : '0';
+                                                    this.textContent = data.following ? 'Following' : 'Follow';
+                                                    
+                                                    if(data.following) {
+                                                        this.classList.remove('bg-blue-500','hover:bg-blue-700','text-white');
+                                                        this.classList.add('bg-gray-300','hover:bg-gray-400','text-gray-500');
+                                                    } else {
+                                                        this.classList.remove('bg-gray-300','hover:bg-gray-400','text-gray-500');
+                                                        this.classList.add('bg-blue-500','hover:bg-blue-700','text-white');
+                                                    }
                                                 } else {
-                                                    this.classList.remove('bg-gray-300','hover:bg-gray-400','text-gray-500');
-                                                    this.classList.add('bg-blue-500','hover:bg-blue-700','text-white');
+                                                    alert('Error updating follow status.');
                                                 }
-                                            } else {
-                                                alert('Error updating follow status.');
-                                            }
+                                            });
                                         });
-                                    });
-                                }
-                            });
-                        </script>
-                        <button class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-1.5 px-6 rounded-md w-24 flex items-center justify-center">
-                            Message
-                        </button>
+                                    }
+                                });
+                            </script>
+                            <button class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-1.5 px-6 rounded-md w-24 flex items-center justify-center">
+                                Message
+                            </button>
+                        @endif
                     </div>
                     <!-- Profile Statistics (followers, posts, following) -->
                     <div class="flex space-x-5 mt-4 text-gray-800 dark:text-white">
