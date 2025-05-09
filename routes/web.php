@@ -19,6 +19,8 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\ChatController;
+
 
 // Default route returning the registration view
 Route::get('/', function () {
@@ -63,6 +65,15 @@ Route::middleware('auth')->group(function () {
     Route::resource('posts', PostController::class);
     // Additional route to show a single post using PostController (duplicate naming when used with resource)
     Route::get('/posts/{post}', [PostController::class, 'show'])->name('posts.show');
+
+    // Chat routes
+    Route::get('/chat', [ChatController::class, 'index'])->name('chat.index');
+    Route::get('/chat/{user}', [ChatController::class, 'show'])->name('chat.show');
+    Route::post('/chat/send', [ChatController::class, 'sendMessage'])->name('chat.send');
+    Route::get('/chat/messages/{user}', [ChatController::class, 'getMessages'])->name('chat.messages');
+    Route::get('/chat/{user}/messages', [ChatController::class, 'getMessagesJson'])->name('chat.messages');
+    Route::get('/chat/{userId}/messages/new', [ChatController::class, 'getNewMessages'])->name('chat.messages.new')
+        ->middleware('auth');
 });
 
 // Follow/Unfollow routes for profiles

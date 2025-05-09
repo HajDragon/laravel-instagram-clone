@@ -28,6 +28,8 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
+        \Cache::put('user-online-' . Auth::id(), true, now()->addMinutes(5));
+
         return redirect()->intended(route('dashboard', absolute: false));
     }
 
@@ -36,6 +38,8 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request): RedirectResponse
     {
+        \Cache::forget('user-online-' . Auth::id());
+
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();

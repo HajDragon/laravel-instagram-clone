@@ -14,9 +14,11 @@
  * - Navigation bar integration
  * - Optional header section
  * - Dark mode support
+ * - global notification for messages
  *
  * @var string $header Optional header content to display at top of page
  * @yield content The main page content
+
  */
 --}}
 <!DOCTYPE html>
@@ -30,23 +32,15 @@
     }"
     :class="{'dark': darkMode }">
 <head>
-    <!-- ... existing head content ... -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-
-    <title>{{ config('app.name', 'Laravel') }}</title>
-
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-
-    <!-- Scripts -->
+    <meta name="csrf-token" content="{{ csrf_token() }}"> {{-- This is correct --}}
+    {{-- ...other head elements... --}}
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="font-sans antialiased bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200">
-    <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
-        @include('layouts.navigation')
+    <div class="min-h-screen flex flex-col"> {{-- Changed to flex flex-col --}}
+        @include('layouts.navigation') {{-- This should be the first direct child --}}
 
         <!-- Page Heading -->
         @isset($header)
@@ -58,9 +52,15 @@
         @endisset
 
         <!-- Page Content -->
-        <main>
+        <main class="flex-grow"> {{-- Added flex-grow to take remaining space --}}
             @yield('content')
         </main>
+
+        {{-- Global notification and scripts can be outside or at the end of the main flex container --}}
     </div>
+    <div id="global-notification" class="fixed top-5 right-5 z-50 hidden bg-red-500 text-white px-4 py-3 rounded shadow-lg">
+        <span id="global-notification-message"></span>
+    </div>
+    @stack('scripts')
 </body>
 </html>

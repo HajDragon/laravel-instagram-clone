@@ -6,6 +6,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\Cache;
 
 /**
  * Class User
@@ -154,5 +155,59 @@ class User extends Authenticatable
     public function posts()
     {
         return $this->hasMany(Post::class);
+    }
+
+    /**
+     * Check if the user is currently online
+     * 
+     * @return bool
+     */
+    public function isOnline()
+    {
+        return \Cache::has('user-online-' . $this->id);
+    }
+
+    /**
+     * Get all messages received by the user.
+     * Used for unread count.
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function receivedMessages()
+    {
+        return $this->hasMany(\App\Models\Message::class, 'receiver_id');
+    }
+
+    /**
+     * Get all messages sent by the user.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function sentMessages()
+    {
+        return $this->hasMany(\App\Models\Message::class, 'sender_id');
+    }
+
+    /**
+     * Get all messages sent or received by the user.
+     */
+    public function messages()
+    {
+        return Message::where(function ($query) {
+            $query->where('sender_id', $this->id)
+                ->orWhere('receiver_id', $this->id);
+        });
+    }
+
+    /**
+     * Get all messages sent and received by the user.
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function allMessages()
+    {
+        $sent = $this->sentMessages();
+        $received = $this->receivedMessages();
+
+        return $sent->union($received->getQuery());
     }
 }

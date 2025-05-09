@@ -44,6 +44,10 @@
                 <x-search-bar />
             </div>
 
+            <div class="hidden sm:flex sm:items-center sm:ml-4">
+                <x-open-chat />
+            </div>
+
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ml-6">
                 <x-dropdown align="right" width="48">
@@ -106,6 +110,12 @@
                 <div class="px-4 py-2 flex items-center">
                     <span class="text-gray-600 dark:text-gray-500 text-sm mr-2">Theme:</span>
                     <x-theme-toggle />
+                </div>
+
+                <div class="px-4 py-2 flex items-center">
+                    <span class="text-gray-600 dark:text-gray-500 text-sm mr-2">Chat:</span>
+                    <x-open-chat/>
+
                 </div>
                 
                 <x-responsive-nav-link :href="route('profile.edit')">

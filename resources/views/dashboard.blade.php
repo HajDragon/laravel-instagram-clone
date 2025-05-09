@@ -87,7 +87,9 @@
                                 });
                             </script>
                             <button class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-1.5 px-6 rounded-md w-24 flex items-center justify-center">
-                                Message
+                                <a href= "{{ route('chat.show', ['user' => $profile->id]) }}">
+                                    Message
+                                </a>
                             </button>
                         @endif
                     </div>
