@@ -134,5 +134,4 @@ Laravel - The web framework used
 Tailwind CSS - CSS framework
 Picsum Photos - For demo images
 Heroicons - SVG icons
-Built with ❤️ by Your Name
-
+Built with ❤️ by Arshia
